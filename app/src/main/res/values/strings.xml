@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">BooksLike</string>
+    <string name="search">Search</string>
+    <string name="no_item_found">No books found</string>
+    <string name="insert_other">Please insert another search query</string>
+    <string name="error_http">Problem with the HTTP request</string>
+    <string name="error_url">URL creation failed</string>
+    <string name="error_response">Error Response Code:</string>
+    <string name="error_reading">URL creation failed</string>
+    <string name="error_extracting">Error extracting the data from the JSON response</string>
+    <string name="no_internet">No internet connection</string>
+</resources>
