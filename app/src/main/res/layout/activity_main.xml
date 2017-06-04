@@ -7,27 +7,10 @@
     android:orientation="vertical"
     tools:context="com.example.android.bookslike.MainActivity">
 
-    <LinearLayout
+    <android.support.v7.widget.SearchView
+        android:id="@+id/search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/search_field"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_weight="5"
-            android:backgroundTint="@color/colorPrimary"/>
-
-        <Button
-            android:id="@+id/search_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="@string/search"
-            android:background="@color/colorPrimary"
-            android:textColor="@android:color/white"/>
-
-    </LinearLayout>
+        android:layout_height="wrap_content"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -50,6 +33,7 @@
                 android:id="@+id/empty_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 tools:text="@string/no_item_found"
                 android:textColor="@color/colorPrimaryDark"/>
 
@@ -57,6 +41,7 @@
                 android:id="@+id/empty_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 tools:text="@string/insert_other"
                 android:textColor="@color/colorPrimaryDark"/>
 

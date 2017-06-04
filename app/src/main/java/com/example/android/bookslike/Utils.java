@@ -1,6 +1,5 @@
 package com.example.android.bookslike;
 
-import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -34,8 +33,7 @@ public class Utils {
     public Utils() {
     }
 
-    //Get the resources (is needed to be able to use the getString method)
-    private static Resources res = Resources.getSystem();
+
 
     /*
      * Put all the methods in this class together to perform the fetch of the data
@@ -57,7 +55,7 @@ public class Utils {
         } catch (IOException e) {
 
             //If it fails, log it
-            Log.e(LOG_TAG, res.getString(R.string.error_http), e);
+            Log.e(LOG_TAG, "Problem with the HTTP request", e);
         }
 
         //Extract the data needed from the response and create the List from the data
@@ -84,7 +82,7 @@ public class Utils {
         } catch (MalformedURLException e) {
 
             //If it fails, log it
-            Log.e(LOG_TAG, res.getString(R.string.error_url), e);
+            Log.e(LOG_TAG, "URL creation failed", e);
         }
         return url;
     }
@@ -125,12 +123,12 @@ public class Utils {
             } else {
 
                 //If the connection is unsuccessful, log it
-                Log.e(LOG_TAG, res.getString(R.string.error_response) + " " + connection.getResponseCode());
+                Log.e(LOG_TAG, "Error Response Code: " + connection.getResponseCode());
             }
         } catch (IOException e) {
 
             //If it fails, log it
-            Log.e(LOG_TAG, res.getString(R.string.error_reading), e);
+            Log.e(LOG_TAG, "URL creation failed", e);
         } finally {
 
             //If the connection is on yet and the InputStream is open yet, disconnect and close the InputStream
@@ -199,14 +197,20 @@ public class Utils {
                 JSONObject item = items.getJSONObject(i);
                 JSONObject volume = item.getJSONObject("volumeInfo");
                 String title = volume.getString("title");
-                String authors = volume.getJSONArray("authors").get(0).toString();
+                String author;
+                if (volume.has("authors")) {
+                    author = volume.getJSONArray("authors").get(0).toString();
+                }
+                else {
+                    author = "Unknown author";
+                }
                 String link = volume.getString("infoLink");
 
-                //Create a new Book Object with the data of a given book
-                Book book = new Book(authors, title, link);
+                    //Create a new Book Object with the data of a given book
+                    Book book = new Book(author, title, link);
 
-                //Add the book to the List of Book Objects
-                books.add(book);
+                    //Add the book to the List of Book Objects
+                    books.add(book);
             }
 
 

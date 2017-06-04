@@ -9,10 +9,9 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,8 +24,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     //Variable for the BookAdapter of the list of the books
     private BookAdapter mAdapter;
 
-    //Variable for the search field
-    private EditText searchField;
+    //Variable for the SearchView
+    private SearchView search;
 
     //Variable for the query given by the user
     private String mQuery;
@@ -60,31 +59,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         empty1 = (TextView) findViewById(R.id.empty_1);
         empty2 = (TextView) findViewById(R.id.empty_2);
 
-        //Get the search field
-        searchField = (EditText) findViewById(R.id.search_field);
-
-        //Create a variable for the search button
-        Button searchButton = (Button) findViewById(R.id.search_button);
-
         //Create a ConnectivityManager and get the NetworkInfo from it
         ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
 
         //Create a boolean variable for the connectivity status
-        boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
+        final boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
+
+        //Get the SearchView and enable the Submit Button on it
+        search = (SearchView) findViewById(R.id.search);
+        search.setSubmitButtonEnabled(true);
 
         //If the device is connected to the network
         if (isConnected) {
-
-            //Set an OnClickListener to the search button
-            searchButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    //Initialize the Loader (execute the search)
-                    getLoaderManager().initLoader(0, null, MainActivity.this);
-                }
-            });
+            //Initialize the Loader
+            getLoaderManager().initLoader(0, null, this);
         }
 
         //If the device is not connected to the network
@@ -94,6 +83,40 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             empty1.setText(R.string.no_internet);
             empty2.setVisibility(View.GONE);
         }
+
+            //Set an OnQueryTextListener to the search button
+            search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    //If the device is connected to the network
+                    if (isConnected) {
+
+                        //Restart the Loader upon the search query(execute the search)
+                        getLoaderManager().restartLoader(0, null, MainActivity.this);
+
+                        return true;
+
+                    }
+
+                    //If the device is not connected to the network
+                    else {
+
+                        //Set the text of first line of he EmptyView and hide the second line (not needed)
+                        empty1.setText(R.string.no_internet);
+                        empty2.setVisibility(View.GONE);
+
+                        return false;
+                    }
+                }
+
+            });
+
 
         //Set an OnClickListener on every item of the ListView
         bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -120,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public Loader<List<Book>> onCreateLoader(int id, Bundle args) {
 
         //Get the query given by the user
-        mQuery = searchField.getText().toString();
+        mQuery = search.getQuery().toString();
 
         //Create a BookLoader with it and return it
         BookLoader loader = new BookLoader(this, mQuery);
@@ -150,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //Get the query given by the user
-        mQuery = searchField.getText().toString();
+        mQuery = search.getQuery().toString();
         outState.putString("query", mQuery);
         super.onSaveInstanceState(outState);
     }
@@ -159,7 +182,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         mQuery = savedInstanceState.getString("query");
         //Initialize the Loader (execute the search)
-        getLoaderManager().initLoader(0, null, MainActivity.this);
         super.onRestoreInstanceState(savedInstanceState);
     }
+
+
+
 }
