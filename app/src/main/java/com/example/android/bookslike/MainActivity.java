@@ -84,38 +84,38 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             empty2.setVisibility(View.GONE);
         }
 
-            //Set an OnQueryTextListener to the search button
-            search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        //Set an OnQueryTextListener to the search button
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
-                @Override
-                public boolean onQueryTextChange(String newText) {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //If the device is connected to the network
+                if (isConnected) {
+
+                    //Restart the Loader upon the search query(execute the search)
+                    getLoaderManager().restartLoader(0, null, MainActivity.this);
+
+                    return true;
+
+                }
+
+                //If the device is not connected to the network
+                else {
+
+                    //Set the text of first line of he EmptyView and hide the second line (not needed)
+                    empty1.setText(R.string.no_internet);
+                    empty2.setVisibility(View.GONE);
+
                     return false;
                 }
+            }
 
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    //If the device is connected to the network
-                    if (isConnected) {
-
-                        //Restart the Loader upon the search query(execute the search)
-                        getLoaderManager().restartLoader(0, null, MainActivity.this);
-
-                        return true;
-
-                    }
-
-                    //If the device is not connected to the network
-                    else {
-
-                        //Set the text of first line of he EmptyView and hide the second line (not needed)
-                        empty1.setText(R.string.no_internet);
-                        empty2.setVisibility(View.GONE);
-
-                        return false;
-                    }
-                }
-
-            });
+        });
 
 
         //Set an OnClickListener on every item of the ListView
@@ -184,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //Initialize the Loader (execute the search)
         super.onRestoreInstanceState(savedInstanceState);
     }
-
 
 
 }
